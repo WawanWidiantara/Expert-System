@@ -1,8 +1,23 @@
 class RuleBasedExpertSystem:
     def __init__(self):
+        self.symptom_description = {
+            "G01": "Nyeri Dada",
+            "G02": "Diare Selama Beberapa Hari",
+            "G03": "Sakit Kepala",
+            "G04": "Jantung Berdebar",
+            "G05": "Lelah",
+            "G06": "Suka Tidur",
+            "G07": "Cepat Marah",
+            "G08": "Ingatan Melemah",
+            "G09": "Tak Mampu Berkonsentrasi",
+            "G10": "Daya Kemampuan Berkurang",
+            "G11": "Tidak Tahan Terhadap Suara atau Gangguan Lain",
+            "G12": "Emosi Tidak Terkendali",
+        }
+
         self.rules = {
             "JK1": ["G1", "G2"],
-            "JK2": ["G3", "G4", "G5", "G6", "G7", "G1"],
+            "JK2": ["G3", "G4", "G5", "G6", "G7"],
             "JK3": ["G8", "G9", "G10", "G11"],
         }
 
@@ -69,15 +84,15 @@ class RuleBasedExpertSystem:
             ) = self.calculate_probability(symptoms)
 
             if jk1_probability > jk2_probability and jk1_probability > jk3_probability:
-                return f"Stres Ringan ({jk1_probability})"
+                return f"Stres Ringan ({jk1_probability*100:.1f}%)"
             elif (
                 jk2_probability > jk1_probability and jk2_probability > jk3_probability
             ):
-                return f"Stres Sedang ({jk2_probability})"
+                return f"Stres Sedang ({jk2_probability*100:.1f}%)"
             elif (
                 jk3_probability > jk1_probability and jk3_probability > jk2_probability
             ):
-                return f"Stres Berat ({jk3_probability})"
+                return f"Stres Berat ({jk3_probability*100:.1f}%)"
             else:
                 return "Unknown"
         else:
@@ -118,15 +133,18 @@ class RuleBasedExpertSystem:
             divider += self.symptoms[key][1][symptom] * self.symptoms[key][0]
         return divider
 
+    def get_symptom_description(self):
+        print("Kode\t|\tGejala")
+        print("-" * 50)
+        for key, value in self.symptom_description.items():
+            print(f"{key}\t|\t{value}")
+        print("-" * 50)
+
 
 expert_system = RuleBasedExpertSystem()
-symptoms = [
-    "G1",
-    "G2",
-    # "G3",
-    # "G4",
-    # "G5",
-]
+expert_system.get_symptom_description()
+user_input = input("Inputkan kode gejala dipisahkan dengan spasi: ")
+symptoms = [word.upper() for word in user_input.split()]
+print("-" * 50)
 diagnosis = expert_system.diagnose(symptoms)
-
-print(f"Diagnosis: {diagnosis}")
+print(f"\nDiagnosis: {diagnosis}")
